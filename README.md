@@ -1,2 +1,2 @@
-# processing_py
-Applying concepts of intelligent agents using processing.py
+# search_algorithms
+Playing with search algorithms at processing.py
