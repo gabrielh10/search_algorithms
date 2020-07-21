@@ -14,6 +14,7 @@ class Food():
     def update(self, x, y):    
         newPos = PVector(x * self.factor,y * self.factor)
         self.position = newPos
+        self.grid = PVector(x,y)
         #c = color (random(255), random(255), random(255))
         #self.color = c
         
