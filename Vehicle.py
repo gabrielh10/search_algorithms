@@ -8,13 +8,31 @@ class Vehicle():
 
     def __init__(self, x, y, factor):
         self.acceleration = PVector(0, 0)
-        self.velocity = PVector(0, -2)
+        self.velocity = PVector(0, 0)
         self.position = PVector(x*factor, y*factor)
         self.factor = factor
         self.grid = PVector(x,y)
         self.r = 20
         self.maxspeed = 4
         self.maxforce = 0.2
+    
+    def upPos(self, pos):    
+        vector = PVector(pos.x, pos.y)
+        self.position = vector
+       #delay(10)   
+    
+    def move(self, list):
+        if list:
+            pos = list.pop(0)
+            vector = PVector(pos.x, pos.y)
+            self.grid = PVector(pos.w, pos.h)
+            self.position = vector
+            delay(100)
+            #dist = self.position - vector
+            #self.arrive(vector)
+            
+            #self.update()
+            #self.display()
 
     # Method to update location
     def update(self):
@@ -73,4 +91,16 @@ class Vehicle():
            # vertex(-self.r, self.r * 2)
            # vertex(self.r, self.r * 2)
            # endShape(CLOSE)
-            
+        
+    def seek(self, target):
+        
+        # A vector pointing from the location to the target
+        desired = target - self.position
+        #print(desired)
+        # Scale to maximum speed
+        desired.setMag(self.maxspeed)
+
+        steer = desired - self.velocity
+        steer.limit(self.maxforce)  # Limit to maximum steering force
+       #print(steer)
+        self.applyForce(steer)
