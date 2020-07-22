@@ -50,7 +50,7 @@ def bfsTeste(grid):
     visited = set()
     frontier = []    
     
-    print(vehicle.grid.x, vehicle.grid.y)
+    #print(vehicle.grid.x, vehicle.grid.y)
   #  visited.append(grid[vehicle.grid.x][vehicle.grid.y])
   #  frontier.append(grid[vehicle.grid.x][vehicle.grid.y])
     #visited.append(grid[0][0])
@@ -59,16 +59,20 @@ def bfsTeste(grid):
     while(len(frontier) > 0):
         node, path = frontier.pop(0)  
         node.explored = 1
+        node.display()
+        #delay(100)
         visited.add(node)
         for neighbour in node.getNeighbours(grid):
             if neighbour.w == int(food.grid.x) and neighbour.h == int(food.grid.y):
-                print("sucesso!")  
+                print("sucesso!", neighbour.x, neighbour.y)  
                 return path + [neighbour]
             else:     
                 if neighbour not in visited:
                     visited.add(neighbour)
                     frontier.append( (neighbour, path+[neighbour]) )
-
+    print("Neightbours:",node.getNeighbours(grid))
+    print("LenFront:", len(frontier))
+    print("LenVisited:", len(visited))
 def dfs():            
     visited = []
     frontier = []    
@@ -194,15 +198,17 @@ def draw():
             if food.grid.x == i and food.grid.y == j:
                 #grid[i][j].food = food
                 vector = vehicle.position - target
-                if vector.mag() < 5:
-                    food.update(int(random(20)), int(random(20)))
-                    print("NewFood:", food.grid.x, food.grid.y)
+                if vehicle.grid.x == food.grid.x and vehicle.grid.y == food.grid.y :
+                    food.update(int(random(20)), int(random(20)))                
                     clearGrid(grid)
                     result = bfsTeste(grid)
-                    
-                    for el in result:
-                        print(el.x, el.y)
-                        el.path = 1
+                    if result:
+                        for el in result:
+                            #print(el.x, el.y)
+                            el.path = 1
+                    else:
+                        print("Result veio None")
+                        print(result)
                     #grid[i][j].food = food
                     counter+=1                    
                 
