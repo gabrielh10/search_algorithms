@@ -17,6 +17,8 @@ from Obstacle import Obstacle
 from Cell import Cell
 import time
 
+
+
 #Working, but need some fix at the algorithm visited is equals to frontier (it's shouldn't)
 def bfs(grid):
     visited = []
@@ -48,7 +50,8 @@ def bfs(grid):
     return None       
 def bfsTeste(grid):
     visited = set()
-    frontier = []    
+    frontier = []  
+    aux = []  
     
     #print(vehicle.grid.x, vehicle.grid.y)
   #  visited.append(grid[vehicle.grid.x][vehicle.grid.y])
@@ -58,16 +61,17 @@ def bfsTeste(grid):
     print("Food:", int(food.grid.x), int(food.grid.y))
     while(len(frontier) > 0):
         node, path = frontier.pop(0)  
-        node.explored = 1
-        node.display()
+        #node.explored = 1
+        #node.display()
         #delay(100)
         visited.add(node)
+        aux.append(node)
         for neighbour in node.getNeighbours(grid):
             if neighbour.w == int(food.grid.x) and neighbour.h == int(food.grid.y):
                 print("sucesso!", neighbour.x, neighbour.y)  
-                return path + [neighbour]
+                return path + [neighbour], aux
             else:     
-                if neighbour not in visited:
+                if neighbour not in visited or neighbour not in visited:
                     visited.add(neighbour)
                     frontier.append( (neighbour, path+[neighbour]) )
     print("Neightbours:",node.getNeighbours(grid))
@@ -95,7 +99,8 @@ def dfs():
 
 def dfsTeste(grid):
     visited = set()
-    frontier = []    
+    frontier = []  
+    aux = [] 
   #  visited.append(grid[vehicle.grid.x][vehicle.grid.y])
   #  frontier.append(grid[vehicle.grid.x][vehicle.grid.y])
     #visited.append(grid[0][0])
@@ -103,12 +108,13 @@ def dfsTeste(grid):
     print("Food:", int(food.grid.x), int(food.grid.y))
     while(len(frontier) > 0):
         node, path = frontier.pop()  
-        node.explored = 1
+        #node.explored = 1
         visited.add(node)
+        aux.append(node)
         for neighbour in node.getNeighbours(grid):
             if neighbour.w == int(food.grid.x) and neighbour.h == int(food.grid.y):
                 print("sucesso!")  
-                return path + [neighbour]
+                return path + [neighbour], visited
             else:     
                 if neighbour not in visited:
                     visited.add(neighbour)
@@ -144,13 +150,46 @@ def clearGrid(grid):
             grid[i][j].explored = 0
             grid[i][j].path = 0
 
+def showPathDynamically(list):
+    test = list[:]
+    print(len(test))
+    el = test.pop(0)
+    el.path = 1
+    #delay(20)
+    el.display()  
+    
+def showStatesDynamically(listParam):
+    #for el in listParam:
+    #    print("State:", el.w, el.h)
+    states = listParam[:]
+    
+   # for te in states:
+        #te.explored = 1
+    #print(len(states))
+    e = states.pop(0)
+    print(e.w, e.h)
+    e.explored = 1
+    #delay(20)
+    e.display() 
+
 nCols = 20;
 nRows = 20;
 sizeGrid = 20;
 result = []
+visited = []
+
+def testing(param, nodes):
+    print(nodes)
+    param[nodes].explored = 1
+    param[nodes].display()
+    print(nodes)
+    print(len(param))
+    if nodes == len(param)-1:
+        print("EndSearch")
+        #endSearch=+1
 
 def setup():
-    global vehicle, food, obstacle,listObstacles, counter, textY, textH, foodH, nCols, nRows, grid, sizeGrid, result
+    global vehicle, food, obstacle,listObstacles, counter, textY, textH, foodH, nCols, nRows, grid, sizeGrid, result, visited, nodes, endSearch
     size(400, 400)
     textH = height
     textH = 14
@@ -162,6 +201,8 @@ def setup():
     counter = 0
     listObstacles = []
     generateObstacles(10)
+    nodes = 0
+    endSearch = 0
     
     grid = makeGrid()
     
@@ -177,9 +218,9 @@ def setup():
                 
     obstaclesToGrid(listObstacles)
     
-    result = bfsTeste(grid)
-    for el in result:
-         el.path = 1
+    result, visited = bfsTeste(grid)
+    #for el in result:
+    #     el.path = 1
     #    print("Result:", el.w, el.h)
 
  #   visited = []
@@ -188,7 +229,7 @@ def setup():
  #        el.explored = 1
  #       print("Visitados:", el.w, el.h)  
 def draw():
-    global counter, result
+    global counter, result, visited, nodes, endSearch
     background(255)
     target = PVector(food.position.x , food.position.y)
     
@@ -201,14 +242,16 @@ def draw():
                 if vehicle.grid.x == food.grid.x and vehicle.grid.y == food.grid.y :
                     food.update(int(random(20)), int(random(20)))                
                     clearGrid(grid)
-                    result = bfsTeste(grid)
-                    if result:
-                        for el in result:
+                    result, visited = bfsTeste(grid)
+                    nodes = 0
+                    endSearch = 0                
+                    #if result:
+                        #for el in result:
                             #print(el.x, el.y)
-                            el.path = 1
-                    else:
-                        print("Result veio None")
-                        print(result)
+                            #el.path = 1
+                    #else:
+                    #    print("Result veio None")
+                    #    print(result)
                     #grid[i][j].food = food
                     counter+=1                    
                 
@@ -223,7 +266,22 @@ def draw():
     vehicle.update()
     vehicle.display()
     
-    vehicle.move(result)
+    #showStatesDynamically(visited)
+   
+   
+    testing(visited, nodes)
+    if nodes < len(visited)-1:
+        nodes+=1
+    elif nodes == len(visited)-1:
+        endSearch=1
+    
+    print("EndSearchValue:", endSearch)
+    if endSearch != 0:
+        showPathDynamically(result)  
+        vehicle.move(result)
+    #delay(100)
+    
+    #
 
     food.display()
     #bfs()
