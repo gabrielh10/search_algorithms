@@ -33,14 +33,18 @@ class Cell():
             def getNeighbours(self, grid):
                 list = []
                 if self.w > 0:        #left neighbour
+                    #if grid[self.w-1][self.h].obstacle == 0:
                     list.append(grid[self.w - 1][self.h])
                 if self.h > 0:        #up neighbour   
-                    list.append(grid[self.w][self.h-1])
+                    #if grid[self.w][self.h-1].obstacle == 0:
+                     list.append(grid[self.w][self.h-1])
                 if self.w < 19:       #right neighbour
+                   #if grid[self.w+1][self.h].obstacle == 0:
                     list.append(grid[self.w+1][self.h])
                 if self.h < 19:       #down neighbour
+                    #if grid[self.w][self.h+1].obstacle == 0:
                     list.append(grid[self.w][self.h+1])   
-                            
+                       
                 return list
             
             def __eq__(self, other):         
