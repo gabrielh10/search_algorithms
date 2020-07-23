@@ -2,10 +2,12 @@
 
 class Obstacle():
 
-    def __init__(self, x, y, factor):
+    def __init__(self, x, y, xi,yi,factor):
         self.r = 20
         self.color = color(0,0,0)
-        self.position = PVector(x*factor,y*factor) #real pixel position
+        self.xi = xi
+        self.yi = yi
+        self.position = PVector(x*factor+xi,y*factor+yi) #real pixel position
         self.factor = factor #size of each grid tile 
         self.grid = PVector(x,y) #position at the grid
 
