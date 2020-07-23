@@ -6,10 +6,10 @@
 
 class Vehicle():
 
-    def __init__(self, x, y, factor):
+    def __init__(self, x, y, xi,yi, factor):
         self.acceleration = PVector(0, 0)
         self.velocity = PVector(0, 0)
-        self.position = PVector(x*factor, y*factor)
+        self.position = PVector(x*factor+xi, y*factor+yi)
         self.factor = factor
         self.grid = PVector(x,y)
         self.r = 20

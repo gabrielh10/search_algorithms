@@ -2,8 +2,10 @@
 
 class Food():
     #x,y are positions at the grid and factor de size of the grid
-    def __init__(self, x, y, factor):
+    def __init__(self, x, y, xi,yi, factor):
         self.acceleration = PVector(0, 0)
+        self.xi = xi
+        self.yi = yi
         self.position = PVector(x*factor,y*factor) #real pixel position
         self.factor = factor #size of each grid tile 
         self.grid = PVector(x,y) #position at the grid
