@@ -6,11 +6,9 @@
 
 class Vehicle():
 
-    def __init__(self, x, y,xi,yi, factor):
+    def __init__(self, x, y, xi,yi, factor):
         self.acceleration = PVector(0, 0)
         self.velocity = PVector(0, 0)
-        self.xi = xi
-        self.yi = yi
         self.position = PVector(x*factor+xi, y*factor+yi)
         self.factor = factor
         self.grid = PVector(x,y)
@@ -21,7 +19,7 @@ class Vehicle():
     def upPos(self, pos):    
         vector = PVector(pos.x, pos.y)
         self.position = vector
-       #(10)   
+       #delay(10)   
     
     def move(self, list):
         if list:
@@ -29,7 +27,12 @@ class Vehicle():
             vector = PVector(pos.x, pos.y)
             self.grid = PVector(pos.w, pos.h)
             self.position = vector
+            delay(100)
+            #dist = self.position - vector
+            #self.arrive(vector)
             
+            #self.update()
+            #self.display()
 
     # Method to update location
     def update(self):

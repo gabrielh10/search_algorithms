@@ -32,21 +32,45 @@ class Cell():
                     
             def getNeighbours(self, grid):
                 list = []
-                if self.h > 0:        #up neighbour   
-                    if grid[self.w][self.h-1].obstacle == 0:
-                        list.append(grid[self.w][self.h-1])                 
+        
                 if self.h < 19:       #down neighbour
                     if grid[self.w][self.h+1].obstacle == 0:
-                        list.append(grid[self.w][self.h+1])
+                        list.append(grid[self.w][self.h+1])  
+                if self.h > 0:        #up neighbour   
+                    if grid[self.w][self.h-1].obstacle == 0:
+                        list.append(grid[self.w][self.h-1])
                 if self.w > 0:        #left neighbour
                     if grid[self.w-1][self.h].obstacle == 0:
-                       list.append(grid[self.w - 1][self.h])
+                        list.append(grid[self.w - 1][self.h])
                 if self.w < 19:       #right neighbour
-                   if grid[self.w+1][self.h].obstacle == 0:
-                       list.append(grid[self.w+1][self.h])
-  
+                    if grid[self.w+1][self.h].obstacle == 0:
+                        list.append(grid[self.w+1][self.h])
                        
                 return list
+                                
+            def getNeighboursWithCost(self, grid, root):
+                list = []                    
+                if self.h < 19:       #down neighbour
+                    if grid[self.w][self.h+1].obstacle == 0:
+                        cost = grid[self.w][self.h+1].distL1(root.w, root.h)
+                        list.append((grid[self.w][self.h+1], cost) )  
+                if self.h > 0:        #up neighbour   
+                    if grid[self.w][self.h-1].obstacle == 0:
+                        cost = grid[self.w][self.h-1].distL1(root.w, root.h)
+                        list.append((grid[self.w][self.h-1], cost))
+                if self.w > 0:        #left neighbour
+                    if grid[self.w-1][self.h].obstacle == 0:
+                        cost = grid[self.w - 1][self.h].distL1(root.w, root.h)
+                        list.append((grid[self.w - 1][self.h], cost))
+                if self.w < 19:       #right neighbour
+                    if grid[self.w+1][self.h].obstacle == 0:
+                        cost = grid[self.w+1][self.h].distL1(root.w, root.h)
+                        list.append((grid[self.w+1][self.h], cost))
+                       
+                return list
+            
+            def distL1(self,x2,y2):
+                return int(abs(x2-self.h)+abs(y2-self.w))
             
             def __eq__(self, other):         
                 if not isinstance(other, Cell):

@@ -2,6 +2,8 @@
 
 class Obstacle():
 
+    
+        
     def __init__(self, x, y, xi,yi,factor):
         self.r = 20
         self.color = color(0,0,0)
@@ -13,7 +15,7 @@ class Obstacle():
 
     # Method to update food location
     def update(self, x, y):    
-        newPos = PVector(x * self.factor,y * self.factor)
+        newPos = PVector(x * self.factor+self.xi,y * self.factor+self.yi)
         self.position = newPos
 
     def display(self):
