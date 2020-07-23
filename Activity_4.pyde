@@ -44,6 +44,7 @@ def aStarSearch(grid):
     visited = {}
     frontier = []
     aux = []
+    auxFront = []
     
     hVal = distL1(vehicle.grid.x,vehicle.grid.y,food.grid.x,food.grid.y)
     gVal = 0
@@ -55,7 +56,7 @@ def aStarSearch(grid):
     #frontier = PriorityQueue()
     #frontier.put(i)
     #frontier.get()
-    print("L1:",distL1(food.grid.x,food.grid.y, food.grid.x,food.grid.y))
+    #print("L1:",distL1(food.grid.x,food.grid.y, food.grid.x,food.grid.y))
     while True:
         cur,fVal,path = frontier.pop(0)
         #print(cur)
@@ -66,7 +67,7 @@ def aStarSearch(grid):
         #print(cur.w,cur.h,food.grid.x,food.grid.y)
         #print("L1(curNode,Food):",distL1(cur.w,cur.h, food.grid.x,food.grid.y))
         if (distL1(cur.w,cur.h, food.grid.x,food.grid.y) == 0):
-            return path+[cur], aux
+            return path+[cur], aux, auxFront
         for child in generateChildAStar(cur, fVal[1]):
             #heuristic to compute distance between current node and goal
             hVal = distL1(child[0].w,child[0].h,food.grid.x,food.grid.y)
@@ -76,6 +77,60 @@ def aStarSearch(grid):
             frontNodes += 1
             if child[0] not in visited or (hVal+gVal)<visited[child[0]]:
                     frontier.append( (child[0], [hVal,gVal], path+[child[0]]) )
+                    auxFront.append(child[0])
+                    visited[child[0]] = hVal+gVal
+        #if cur not in visited:
+        #  visited.add(cur)
+        """ sort the opne list based on f value """
+        #print(frontier)
+        frontier.sort(key=lambda x: x[1][0]+x[1][1], reverse=False)
+        # for f in frontier:
+        #   print(f[0].w,f[0].h,f[1])
+        #print(frontNodes)
+        #print(len(frontier))
+        iteration = iteration + 1
+        #if iteration == 100:
+        #    break
+
+def greSearch(grid):
+    visited = {}
+    frontier = []
+    aux = []
+    auxFront = []
+    
+    hVal = distL1(vehicle.grid.x,vehicle.grid.y,food.grid.x,food.grid.y)
+    gVal = 0
+    frontier = [( grid[int(vehicle.grid.x)][int(vehicle.grid.y)], [hVal,gVal], [grid[int(vehicle.grid.x)][int(vehicle.grid.y)]] ) ]
+               #[(grid[int(vehicle.grid.x)][int(vehicle.grid.y)], [grid[int(vehicle.grid.x)][int(vehicle.grid.y)]] )]
+    iteration = 0
+    frontNodes = 1
+    testedNodes = 0
+    #frontier = PriorityQueue()
+    #frontier.put(i)
+    #frontier.get()
+    #print("L1:",distL1(food.grid.x,food.grid.y, food.grid.x,food.grid.y))
+    while True:
+        cur,fVal,path = frontier.pop(0)
+        #print(cur)
+        testedNodes += 1
+        visited[cur] = fVal[0]+fVal[1]
+        aux.append(cur)
+        """ If the difference between current and goal node is 0 we have reached the goal node"""
+        #print(cur.w,cur.h,food.grid.x,food.grid.y)
+        #print("L1(curNode,Food):",distL1(cur.w,cur.h, food.grid.x,food.grid.y))
+        if (distL1(cur.w,cur.h, food.grid.x,food.grid.y) == 0):
+            return path+[cur], aux, auxFront
+        for child in generateChildAStar(cur, fVal[1]):
+            #heuristic to compute distance between current node and goal
+            hVal = distL1(child[0].w,child[0].h,food.grid.x,food.grid.y)
+            #gVal = child[1][1]
+            gVal = 0
+            #print(hVal,gVal)
+            #print(child[0].w,child[0].h,food.grid.x,food.grid.y,hVal,gVal)
+            frontNodes += 1
+            if child[0] not in visited or (hVal+gVal)<visited[child[0]]:
+                    frontier.append( (child[0], [hVal,gVal], path+[child[0]]) )
+                    auxFront.append(child[0])
                     visited[child[0]] = hVal+gVal
         #if cur not in visited:
         #  visited.add(cur)
@@ -113,6 +168,7 @@ def ucs(grid):
     priorityQueue = PriorityQueue()
     visited = set()
     aux = []
+    auxFront = []
     
     priorityQueue.put((grid[int(vehicle.grid.x)][int(vehicle.grid.y)], [], 0), 0)
     while not priorityQueue.empty():
@@ -127,14 +183,16 @@ def ucs(grid):
                     node_neighbour = neighbour[0]
                     cost = cost + neighbour[1]                             
                     priorityQueue.put((node_neighbour, path + [node_neighbour], cost), cost)
-    return path, aux
-
+                    auxFront.append(node_neighbour)
+    
+    return path, aux, auxFront
 
 #Working, but need some fix at the algorithm visited is equals to frontier (it's shouldn't)
 def bfs(grid):
     visited = set()
     aux = []
     frontier = []
+    frontierAux = []
     frontier = [(grid[int(vehicle.grid.x)][int(vehicle.grid.y)], [grid[int(vehicle.grid.x)][int(vehicle.grid.y)]] )]
     print("Food:", int(food.grid.x), int(food.grid.y))
     while(len(frontier) > 0):
@@ -149,7 +207,8 @@ def bfs(grid):
             if neighbour not in visited:
                 visited.add(neighbour)
                 frontier.append( (neighbour, path+[neighbour]) )
-    return path, aux
+                frontierAux.append(neighbour)
+    return path, aux, frontierAux
     print("Neightbours:",node.getNeighbours(grid))
     print("LenFront:", len(frontier))
     print("LenVisited:", len(visited))
@@ -187,6 +246,7 @@ def dfs(grid):
     visited = set()
     aux = []
     frontier = []
+    frontierAux = []
     frontier = [(grid[int(vehicle.grid.x)][int(vehicle.grid.y)], [grid[int(vehicle.grid.x)][int(vehicle.grid.y)]] )]
     print("Food:", int(food.grid.x), int(food.grid.y))
     while(len(frontier) > 0):
@@ -201,7 +261,8 @@ def dfs(grid):
             if neighbour not in visited:
                 visited.add(neighbour)
                 frontier.append( (neighbour, path+[neighbour]) )
-    return path, aux
+                frontierAux.append(neighbour)
+    return path, aux, frontierAux
     print("Neightbours:",node.getNeighbours(grid))
     print("LenFront:", len(frontier))
     print("LenVisited:", len(visited))
@@ -243,7 +304,7 @@ def makeGrid():
 #Add random position obstacles to the listObstacles list
 def generateObstacles(quantidade):
     for x in range(quantidade):
-        obstacle = Obstacle(int(random(nCols)),int(random(nRows)), sizeGrid)
+        obstacle = Obstacle(int(random(nCols)),int(random(nRows)),gridXi,gridYi, sizeGrid)
         listObstacles.append(obstacle)
 
 def obstaclesToGrid(list):
@@ -251,13 +312,14 @@ def obstaclesToGrid(list):
         for j in xrange(nRows):
             for o in list:
                 if o.grid.x == i and o.grid.y == j:
-                    grid[i][j] = Cell(i*20,j*20,i,j, 0, o, 0, 0)
+                    grid[i][j] = Cell(gridXi+i*20,gridYi+j*20,i,j, 0, o, 0, 0,0)
 
 def clearGrid(grid):
     for i in xrange(nCols):
         for j in xrange(nRows):
             grid[i][j].explored = 0
             grid[i][j].path = 0
+            grid[i][j].frontier = 0
 
 def showPathDynamically(list):
     test = list[:]
@@ -295,19 +357,27 @@ def setFoodRandomPositium():
 
 def showStatesDynamically(param, nodes):
     #print(nodes)
-    param[nodes].explored = 1
-    param[nodes].display()
+    if len(param) > 0:
+        param[nodes].explored = 1
+        param[nodes].display()
     #print(nodes)
     #print(len(param))
     if nodes == len(param)-1:
         print("EndSearch")
         #endSearch=+1
 
+def showFrontierStatesDynamically(param, nodes):
+    #print("Node>", param[frontierNodes])
+    if len(param) > 0:
+        param[frontierNodes].frontier = 1
+        param[frontierNodes].display()
+
 nCols = 20;
 nRows = 20;
 sizeGrid = 20;
 result = []
 visited = []
+frontier = []
 cellH = 20
 cellW = 20
 windowH = (nCols+2)*cellW
@@ -320,32 +390,33 @@ textH   = 14
 foodH   = 12
 
 def setup():
-    global vehicle, food, obstacle,listObstacles, counter, textY, textH, foodH, nCols, nRows, grid, sizeGrid, result, visited, nodes, endSearch
+    global vehicle, food, obstacle,listObstacles, counter, textY, textH, foodH, nCols, nRows, grid, sizeGrid, result, visited, nodes, endSearch, frontier, frontierNodes
     
     size(windowH, windowW)    
     velocity = PVector(gridXi, gridYi)
     #vehicle = Vehicle(int(19), int(19), gridXi, gridYi,sizeGrid)
-    vehicle = Vehicle(int(random(nCols)), int(random(nRows)), gridXi, gridYi,sizeGrid)
-    vehicle.position.x=gridXf
-    vehicle.position.y=gridYf
+    vehicle = Vehicle(int(0), int(0), gridXi, gridYi,sizeGrid)
+    #vehicle.position.x=0
+    #vehicle.position.y=0
 
     counter = 0
     listObstacles = []
-    generateObstacles(10)
+    generateObstacles(30)
     nodes = 0
     endSearch = 0
+    frontierNodes = 0
     
     grid = makeGrid()
     
     for i in xrange(nCols):
         for j in xrange(nRows):                
-            grid[i][j] = Cell(i*20,j*20,i,j, 0, 0, 0, 0)
+            grid[i][j] = Cell(gridXi+i*20,gridXi+j*20,i,j, 0, 0, 0, 0, 0)
                 
     obstaclesToGrid(listObstacles)
     
     food = setFoodRandomPositium()
     
-    result, visited = aStarSearch(grid)
+    result, visited, frontier = ucs(grid)
     #for el in result:
     #     el.path = 1
     #    print("Result:", el.w, el.h)
@@ -356,7 +427,7 @@ def setup():
  #        el.explored = 1
  #       print("Visitados:", el.w, el.h)  
 def draw():
-    global counter, result, visited, nodes, endSearch, food
+    global counter, result, visited, nodes, endSearch, food, frontier, frontierNodes
     background(255)
     target = PVector(food.position.x , food.position.y)
     
@@ -369,9 +440,10 @@ def draw():
                 if vehicle.grid.x == food.grid.x and vehicle.grid.y == food.grid.y :
                     food = setFoodRandomPositium()             
                     clearGrid(grid)
-                    result, visited = aStarSearch(grid)
+                    result, visited, frontier = ucs(grid)
                     nodes = 0
-                    endSearch = 0                
+                    endSearch = 0  
+                    frontierNodes = 0              
                     #if result:
                         #for el in result:
                             #print(el.x, el.y)
@@ -393,13 +465,15 @@ def draw():
     vehicle.update()
     vehicle.display()
     
-    #showStatesDynamically(visited)
-   
+    showFrontierStatesDynamically(frontier, frontierNodes)
+    if frontierNodes < len(frontier)-1:
+        frontierNodes+=1
    
     showStatesDynamically(visited, nodes)
+    
     if nodes < len(visited)-1:
         nodes+=1
-    elif nodes == len(visited)-1:
+    elif nodes == len(visited)-1 and frontierNodes == len(frontier)-1:
         endSearch=1
     
     #print("EndSearchValue:", endSearch)

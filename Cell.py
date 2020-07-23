@@ -1,7 +1,7 @@
 class Cell():
             # A cell object knows about its location in the grid 
             # it also knows of its size with the variables x,y,w,h.
-            def __init__(self, tempX, tempY, tempW, tempH, food, obstacle, explored, path):
+            def __init__(self, tempX, tempY, tempW, tempH, food, obstacle, explored, path, frontier):
                 self.x = tempX
                 self.y = tempY
                 self.w = tempW
@@ -10,6 +10,7 @@ class Cell():
                 self.obstacle = obstacle
                 self.explored = 0
                 self.path = 0
+                self.frontier = 0
                 
             def display(self):
                 #print(self.obstacle)
@@ -24,6 +25,10 @@ class Cell():
                 elif self.explored != 0 and self.obstacle == 0:
                     stroke(255)
                     fill(255,255,0)
+                    rect(self.x,self.y, 20, 20)
+                elif self.frontier != 0 and self.obstacle == 0:
+                    stroke(255)
+                    fill(0,50,200)
                     rect(self.x,self.y, 20, 20)
                 else:    
                     stroke(255)

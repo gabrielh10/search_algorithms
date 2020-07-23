@@ -6,7 +6,7 @@ class Food():
         self.acceleration = PVector(0, 0)
         self.xi = xi
         self.yi = yi
-        self.position = PVector(x*factor,y*factor) #real pixel position
+        self.position = PVector(x*factor+xi,y*factor+yi) #real pixel position
         self.factor = factor #size of each grid tile 
         self.grid = PVector(x,y) #position at the grid
         self.r = factor
@@ -14,7 +14,7 @@ class Food():
 
     # Method to update food location
     def update(self, x, y):    
-        newPos = PVector(x * self.factor,y * self.factor)
+        newPos = PVector(x * self.factor+self.xi,y * self.factor+self.yi)
         self.position = newPos
         self.grid = PVector(x,y)
         #c = color (random(255), random(255), random(255))
